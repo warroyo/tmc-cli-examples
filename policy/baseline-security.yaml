@@ -1,0 +1,12 @@
+# tmc clustergroup security-policy create -f policy/baseline-security.yaml
+
+fullName:
+  clusterGroupName: <clustergroupname>
+  name: baseline-audit
+spec:
+  input:
+    audit: true
+    disableNativePsp: true
+  recipe: baseline
+  recipeVersion: v1
+  type: security-policy

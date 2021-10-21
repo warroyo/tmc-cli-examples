@@ -1,0 +1,15 @@
+# tmc clustergroup iam update-policy -f policy/iam.yaml <clustergroupname>
+
+roleBindings:
+  - role: cluster.edit
+    subjects:
+    - kind: GROUP
+      name: sso:dev-team
+  - role: cluster.admin
+    subjects:
+    - kind: GROUP
+      name: sso:k8s-admins
+  - role: cluster.view
+    subjects:
+    - kind: GROUP
+      name: sso:compliance-team

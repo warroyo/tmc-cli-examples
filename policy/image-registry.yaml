@@ -1,0 +1,15 @@
+#tmc workspace image-policy create  -f policy/image-registry.yaml
+fullName:
+  name: block-latest
+  workspaceName: <workspacename>
+spec:
+  input: {}
+  namespaceSelector:
+    matchExpressions:
+    - key: block-latest
+      operator: In
+      values:
+      - "true"
+  recipe: block-latest-tag
+  recipeVersion: v1
+  type: image-policy

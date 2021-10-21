@@ -1,0 +1,14 @@
+#tmc clustergroup namespace-quota-policy create limit-lbs -f policy/quota.yaml --cluster-group-name warroyo
+
+fullName:
+  clusterGroupName: <clustergroupname>
+  name: limit-lbs
+spec:
+  input:
+    persistentvolumeclaimsPerClass: {}
+    requestsStoragePerClass: {}
+    resourceCounts:
+      services.loadbalancers: 10
+  recipe: custom
+  recipeVersion: v1
+  type: namespace-quota-policy

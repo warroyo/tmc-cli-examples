@@ -1,0 +1,73 @@
+fullName:
+  name: tbs-user2
+meta:
+  description: tbs user
+spec:
+  resourceTypes:
+  - namespaces
+  resources:
+  - NAMESPACE
+  rules:
+  - apiGroups:
+    - kpack.io
+    resources:
+    - images
+    verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - patch
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - pods/log
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - secrets
+    verbs:
+    - create
+    - update
+    - patch
+    - delete
+    - get
+  - apiGroups:
+    - kpack.io
+    resources:
+    - builds
+    verbs:
+    - get
+    - list
+    - watch
+    - update
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - serviceaccounts
+    verbs:
+    - get
+    - update
+    - patch
+    - create
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
+
