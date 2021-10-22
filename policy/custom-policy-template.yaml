@@ -1,0 +1,41 @@
+fullName:
+  name: allowed-storage-classes
+spec:
+  object: |-
+    ---
+    apiVersion: templates.gatekeeper.sh/v1beta1
+    kind: ConstraintTemplate
+    metadata:
+      name: allowed-storage-classes
+    spec:
+      crd:
+        spec:
+          names:
+            kind: allowed-storage-classes
+          validation:
+            # Schema for the `parameters` field
+            openAPIV3Schema:
+              properties:
+                storageclasses:
+                  type: array
+                  items:
+                    type: string
+      targets:
+        - target: admission.k8s.gatekeeper.sh
+          rego: |
+             package allowedstorageclasses
+
+             violation[{"msg": msg, "details": {}}] {
+                input.review.object.kind == "PersistentVolume"
+                allowedsc := input.parameters.storageclasses
+                sc := input.review.object.spec.storageClassName
+                not contains(allowedsc,sc)
+                msg := sprintf("%v - storage class not allowed",[sc])
+             }
+         
+             contains(allowedsc,sc) {
+                sc == allowedsc[_]
+             }
+    ---
+  objectType: ConstraintTemplate
+  templateType: OPAGatekeeper

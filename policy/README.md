@@ -39,3 +39,15 @@ this example shows how to create a policy at the workspace level for an image re
 #update the file and replace  <workspacename> with your workspace name
 tmc workspace image-policy create  -f ./image-registry.yaml
 ```
+
+## Custom Policy
+this example shows how to create a custom policy template as well as a custom policy that implements that templat on the clustergroup. in this example we will create a policy template that restricts usage of storage classes to an allowed list.
+
+```bash
+#create the custom policy template
+tmc  policy templates create -f ./custom-policy-template.yaml
+
+# create a policy on the clustergroup using the new template. update the file and replace  <clustergroupname> with your cluster group name
+tmc clustergroup custom-policy  create -f ./custom-policy.yaml
+
+```

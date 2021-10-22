@@ -1,0 +1,18 @@
+#tmc clustergroup custom-policy  create -f policy/custom-policy.yaml
+fullName:
+  clusterGroupName: <clustergroupname>
+  name: allowed-sc
+spec:
+  input:
+    audit: true
+    parameters:
+      storageclasses:
+      - default
+    targetKubernetesResources:
+    - apiGroups:
+      - ""
+      kinds:
+      - PersistentVolume
+  recipe: allowed-storage-classes
+  recipeVersion: v1
+  type: custom-policy
