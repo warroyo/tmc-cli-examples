@@ -1,7 +1,8 @@
-#tmc workspace image-policy create  -f policy/image-registry.yaml
+#@ load("@ytt:data", "data")
+---
 fullName:
   name: block-latest
-  workspaceName: <workspacename>
+  workspaceName: #@ data.values.workspace_name
 spec:
   input: {}
   namespaceSelector:
