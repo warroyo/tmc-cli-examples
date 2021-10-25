@@ -1,7 +1,7 @@
-#tmc clustergroup namespace-quota-policy create limit-lbs -f policy/quota.yaml --cluster-group-name warroyo
-
+#@ load("@ytt:data", "data")
+---
 fullName:
-  clusterGroupName: <clustergroupname>
+  clusterGroupName: #@ data.values.clustergroup_name
   name: limit-lbs
 spec:
   input:

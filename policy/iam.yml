@@ -1,5 +1,5 @@
-# tmc clustergroup iam update-policy -f policy/iam.yaml <clustergroupname>
-
+#@ load("@ytt:data", "data")
+---
 roleBindings:
   - role: cluster.edit
     subjects:

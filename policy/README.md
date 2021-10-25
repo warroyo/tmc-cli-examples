@@ -1,53 +1,76 @@
 # Policy
 
-this outlines how to apply different types of [policies](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-847414C9-EF54-44E5-BA62-C4895160CE1D.html) to workspaces and clustergroups using the TMC cli and yaml files.
+This outlines how to apply different types of [policies](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-concepts/GUID-847414C9-EF54-44E5-BA62-C4895160CE1D.html) to _workspaces_ and _clustergroups_ using the `tmc` CLI and YAML files.
 
+> Note: these policy templates make use of [ytt](https://carvel.dev/ytt/) so they are reusable and extensible.
+
+## Preparation
+
+Start by creating a `values.yaml` where we are configuring the data values that are referenced in the policy templates.
+
+```
+cat > values.yml <<EOF
+#@data/values
+---
+workspace_name: {workspace-name}
+clustergroup_name: {clustergroup_name}
+EOF
+```
+> Replace `{workspace-name}` and `{clustergroup-name}` above with valid _workspace_ and _clustergroup_ names respectively.
 
 ## Security Policy
 
-this example shows how to create a baseline security policy on a cluster group. It is also set to turn of PSPs and set in audit mode
+This example shows how to create a baseline security policy on a cluster group. It is also set to turn off PSPs and set audit mode
 
 
 ```bash
-#update the file and replace  <clustergroupname> with your cluster group name
-tmc clustergroup security-policy create -f ./baseline-security.yaml
+ytt -f baseline-security.yml -f values.yml --output-files /tmp
+tmc clustergroup security-policy create -f /tmp/baseline-security.yml
 ```
 
 ## IAM Policy
 
-this example shows how to create an IAM policy on a cluster group. it will create 3 role bindings for edit,admin, and view and map them to some groups. 
+This example shows how to create an IAM policy on a cluster group. It will create 3 role bindings for _edit_, _admin_, and _view_ and map them to some groups.
 
 
 ```bash
-#replace  <clustergroupname> with your cluster group name
-tmc clustergroup iam update-policy -f ./iam.yaml <clustergroupname>
+tmc clustergroup iam update-policy -f ./iam.yml {clustergroup-name}
 ```
+> Replace `{clustergroup-name}` above with valid _clustergroup_ name.
 
 ## Quota
 
-this example shows how to create a quota policy on a cluster group. In this example it will implement a policy that restricts service type loadbalancer to 10 per cluster.
+This example shows how to create a quota policy on a cluster group. In this example it will implement a policy that restricts service type _loadbalancer_ to _10_ per cluster.
 
 ```bash
-#replace  <clustergroupname> with your cluster group name as well as replace it in the file, this is a duplicate use of clustername and name and a bug has been filed 
-tmc clustergroup namespace-quota-policy create limit-lbs -f ./quota.yaml --cluster-group-name <clustergroupname>
+ytt -f quota.yml -f values.yml --output-files /tmp
+tmc clustergroup namespace-quota-policy create limit-lbs -f /tmp/quota.yml --cluster-group-name {clustergroup-name}
 ```
+> Replace `{clustergroup-name}` above with valid _clustergroup_ name.  There is some unnecessary duplication of effort in that we specify a command line parameter value and config file value for clustergroup name.  This is a known defect and will be fixed in a future release.
+
 
 ## Image Registry
-this example shows how to create a policy at the workspace level for an image registry. this example sets up a policy to block the latest tag on namespaces that have a label of `block-latest: true`
+
+This example shows how to create a policy at the workspace level for an image registry. This example sets up a policy to block the _latest_ tag on namespaces that have a label of `block-latest: true`
 
 ```bash
-#update the file and replace  <workspacename> with your workspace name
-tmc workspace image-policy create  -f ./image-registry.yaml
+ytt -f image-registry.yml -f values.yml --output-files /tmp
+tmc workspace image-policy create  -f /tmp/image-registry.yml
 ```
 
 ## Custom Policy
-this example shows how to create a custom policy template as well as a custom policy that implements that templat on the clustergroup. in this example we will create a policy template that restricts usage of storage classes to an allowed list.
+
+This example shows how to create a custom policy template as well as a custom policy that implements that template on the clustergroup. In this example we will create a policy template that restricts usage of storage classes to an allowed list.
+
+### Step 1: Create the custom policy template
 
 ```bash
-#create the custom policy template
-tmc  policy templates create -f ./custom-policy-template.yaml
+tmc policy templates create -f ./custom-policy-template.yml
+```
 
-# create a policy on the clustergroup using the new template. update the file and replace  <clustergroupname> with your cluster group name
-tmc clustergroup custom-policy  create -f ./custom-policy.yaml
+### Step 2: Create a policy on the clustergroup using the new template
 
+```
+ytt -f custom-policy.yml -f values.yml --output-files /tmp
+tmc clustergroup custom-policy create -f /tmp/custom-policy.yml
 ```

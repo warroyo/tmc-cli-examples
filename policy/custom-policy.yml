@@ -1,6 +1,7 @@
-#tmc clustergroup custom-policy  create -f policy/custom-policy.yaml
+#@ load("@ytt:data", "data")
+---
 fullName:
-  clusterGroupName: <clustergroupname>
+  clusterGroupName: #@ data.values.clustergroup_name
   name: allowed-sc
 spec:
   input:

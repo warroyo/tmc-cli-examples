@@ -32,7 +32,6 @@ spec:
                 not contains(allowedsc,sc)
                 msg := sprintf("%v - storage class not allowed",[sc])
              }
-         
              contains(allowedsc,sc) {
                 sc == allowedsc[_]
              }

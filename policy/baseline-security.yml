@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+---
+fullName:
+  clusterGroupName: #@ data.values.clustergroup_name
+  name: baseline-audit
+spec:
+  input:
+    audit: true
+    disableNativePsp: true
+  recipe: baseline
+  recipeVersion: v1
+  type: security-policy
